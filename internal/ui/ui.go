@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/brandonc/advent2024/internal/maths"
 	"github.com/mitchellh/colorstring"
 )
 
@@ -81,17 +80,8 @@ func Answer(part1 func() int, part2 func() int) {
 	answerPart2 := fmt.Sprintf("%d", part2())
 	timePart2 := time.Since(startTimePart2)
 
-	dashes := strings.Repeat("-", maths.MaxInt(len(answerPart1), len(answerPart2))+2+len("Part X / "))
+	colorstring.Printf("[cyan]Part 1\n[white]%s\n[dark_gray]%s\n\n", rightAlign(answerPart1, answerPart2), humanizeDuration(timePart1))
+	colorstring.Printf("[cyan]Part 2\n[white]%s\n[dark_gray]%s\n\n", rightAlign(answerPart2, answerPart1), humanizeDuration(timePart2))
 
-	colorstring.Printf("[yellow]+%s+\n", dashes)
-	colorstring.Printf("[yellow]| [cyan]Part 1 / [white]%s [yellow]| [dark_gray]%s\n", rightAlign(answerPart1, answerPart2), humanizeDuration(timePart1))
-	colorstring.Printf("[yellow]| [cyan]Part 2 / [white]%s [yellow]| [dark_gray]%s\n", rightAlign(answerPart2, answerPart1), humanizeDuration(timePart2))
-	colorstring.Printf("[yellow]+%s+\n", dashes)
-
-	// +-------------------------+
-	// | Part 1 / 54561213452435 |
-	// | Part 2 /          54076 |
-	// +-----------=-------------+
-
-	colorstring.Printf("[dark_gray]%s\n", humanizeDuration(timePart1+timePart2))
+	colorstring.Printf("[dark_gray]total duration %s\n", humanizeDuration(timePart1+timePart2))
 }
