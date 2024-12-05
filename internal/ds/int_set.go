@@ -12,6 +12,15 @@ func NewIntSet(numbers []int) IntSet {
 	return result
 }
 
+func (i IntSet) Add(n int) {
+	i[n] = struct{}{}
+}
+
+func (i IntSet) Exists(n int) bool {
+	_, has := i[n]
+	return has
+}
+
 func (i IntSet) Intersect(other IntSet) []int {
 	shared := make([]int, 0)
 	for n := range i {
