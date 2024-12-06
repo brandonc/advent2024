@@ -73,13 +73,15 @@ func humanizeDuration(d time.Duration) string {
 
 func Answer(part1 func() int, part2 func() int) {
 	startTimePart1 := time.Now()
+	part1Answer := part1()
 	timePart1 := time.Since(startTimePart1)
 
 	startTimePart2 := time.Now()
+	part2Answer := part2()
 	timePart2 := time.Since(startTimePart2)
 
-	colorstring.Printf("[cyan]Part 1\n[white]%d\n[dark_gray]%s\n\n", part1(), humanizeDuration(timePart1))
-	colorstring.Printf("[cyan]Part 2\n[white]%d\n[dark_gray]%s\n\n", part2(), humanizeDuration(timePart2))
+	colorstring.Printf("[cyan]Part 1\n[white]%d\n[dark_gray]%s\n\n", part1Answer, humanizeDuration(timePart1))
+	colorstring.Printf("[cyan]Part 2\n[white]%d\n[dark_gray]%s\n\n", part2Answer, humanizeDuration(timePart2))
 
 	colorstring.Printf("[dark_gray]total duration %s\n", humanizeDuration(timePart1+timePart2))
 }
