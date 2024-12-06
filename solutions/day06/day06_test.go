@@ -31,7 +31,7 @@ func TestPart1(t *testing.T) {
 func TestPart2(t *testing.T) {
 	answer := Factory().Part2(strings.NewReader(sample2))
 
-	if expected := 0; answer != expected {
+	if expected := 6; answer != expected {
 		t.Fatalf("Expected answer 2 to be %d, got %d", expected, answer)
 	}
 }
