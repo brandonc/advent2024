@@ -1,7 +1,6 @@
 package day11
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"strconv"
@@ -11,100 +10,85 @@ import (
 	"github.com/brandonc/advent2024/solutions/solution"
 )
 
-type day11 struct {
-	root *stone
-}
+type day11 struct{}
 
-type stone struct {
-	number string
-	next   *stone
-}
-
-func (s *stone) split() {
-	if len(s.number)%2 != 0 {
-		ui.Die(errors.New("expected an even number of digits"))
-	}
-
-	newLeft := s.number[:len(s.number)/2]
-	newRight := s.number[len(s.number)/2:]
-
-	ui.Debugf("Splitting %s into %s and %s\n", s.number, newLeft, newRight)
-
-	for len(newRight) > 0 && newRight[0] == '0' {
-		newRight = newRight[1:]
-	}
-
-	if len(newRight) == 0 {
-		newRight = "0"
-	}
-
-	s.number = newLeft
-	oldNext := s.next
-
-	s.next = &stone{number: newRight, next: oldNext}
-}
-
-func (d *day11) load(reader io.Reader) {
-	d.root = &stone{}
-	current := d.root
-
-	data, err := io.ReadAll(reader)
-	if err != nil {
-		ui.Die(err)
-	}
-
-	for _, n := range strings.Split(strings.TrimSpace(string(data)), " ") {
-		s := &stone{number: n}
-		current.next = s
-		current = s
-	}
-}
-
-func (d *day11) applyRules() {
-	current := d.root.next
-	for {
-		if current == nil {
-			break
-		}
-		if current.number == "0" {
-			current.number = "1"
-		} else if len(current.number)%2 == 0 {
-			current.split()
-			current = current.next
-		} else {
-			num, err := strconv.Atoi(current.number)
-			if err != nil {
-				ui.Die(err)
-			}
-			current.number = fmt.Sprintf("%d", num*2024)
-		}
-		current = current.next
-	}
-}
+type stoneCounter map[string]int
 
 func Factory() solution.Solver {
 	return day11{}
 }
 
+func (d *day11) load(reader io.Reader) stoneCounter {
+	data, err := io.ReadAll(reader)
+	if err != nil {
+		ui.Die(err)
+	}
+
+	result := make(stoneCounter)
+
+	for _, n := range strings.Split(strings.TrimSpace(string(data)), " ") {
+		result[n] += 1
+	}
+
+	return result
+}
+
+func (d *day11) blink(c stoneCounter) stoneCounter {
+	newStones := make(stoneCounter)
+
+	for number, qty := range c {
+		if number == "0" {
+			newStones["1"] += qty
+		} else if len(number)%2 == 0 {
+			newLeft := number[:len(number)/2]
+			newRight := number[len(number)/2:]
+
+			for len(newRight) > 0 && newRight[0] == '0' {
+				newRight = newRight[1:]
+			}
+
+			if newRight == "" {
+				newRight = "0"
+			}
+
+			newStones[newLeft] += qty
+			newStones[newRight] += qty
+		} else {
+			num, err := strconv.Atoi(number)
+			if err != nil {
+				ui.Die(err)
+			}
+			newStones[fmt.Sprintf("%d", num*2024)] += qty
+		}
+	}
+
+	return newStones
+}
+
 func (d day11) Part1(reader io.Reader) int {
-	d.load(reader)
+	c := d.load(reader)
 
 	for i := 0; i < 25; i++ {
-		d.applyRules()
+		c = d.blink(c)
 	}
 
 	count := 0
-	current := d.root.next
-	for {
-		if current == nil {
-			break
-		}
-		count += 1
-		current = current.next
+	for _, qty := range c {
+		count += qty
 	}
 	return count
 }
 
 func (d day11) Part2(reader io.Reader) int {
-	return 0
+	c := d.load(reader)
+
+	for i := 0; i < 75; i++ {
+		c = d.blink(c)
+	}
+
+	count := 0
+	for _, qty := range c {
+		count += qty
+	}
+	return count
 }
