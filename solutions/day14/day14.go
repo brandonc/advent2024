@@ -102,8 +102,8 @@ func (d *day14) print() {
 		robotMap[coord{d.robots[r].x, d.robots[r].y}] = struct{}{}
 	}
 
-	for y := 0; y < 103; y++ {
-		for x := 0; x < 101; x++ {
+	for y := 0; y < d.fieldY; y++ {
+		for x := 0; x < d.fieldX; x++ {
 			if _, ok := robotMap[coord{x, y}]; ok {
 				fmt.Print("█")
 			} else {
