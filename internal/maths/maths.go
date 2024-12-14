@@ -49,3 +49,7 @@ func LCM(a int, b ...int) int {
 	}
 	return result
 }
+
+func Mod(a, b int) int {
+	return (a%b + b) % b
+}
